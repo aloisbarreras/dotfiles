@@ -1,6 +1,5 @@
 - hosts: localhost
   connection: local
-  become: true
   gather_facts: true
   vars:
     vagrant_version: 2.0.4
@@ -10,6 +9,10 @@
         that: '(ansible_version.major, ansible_version.minor, ansible_version.revision) >= (2, 4, 0)'
         msg: 'Please install the recommended version 2.4+. You have Ansible {{ ansible_version.string }}.'
       run_once: yes
+
+    - name: get the username running the deploy
+      local_action: command whoami
+      register: username_on_the_host
 
   roles:
      - { role: ubuntu, when: ansible_distribution == 'Ubuntu' }
@@ -29,42 +32,55 @@
               "Vagrantfile": "ruby"
             }
           }
+     - role: gantsign.oh-my-zsh
+       # Default theme
+       oh_my_zsh_theme: mh
+
+       # Default plugins
+       oh_my_zsh_plugins:
+         - git
+
+       # User configuration
+       # Important: oh-my-zsh is installed per user so you need to specify the users to install it for.
+       users:
+         - username: "{{ username_on_the_host.stdout }}"
 
   tasks:
-    - name: install nvm
-      shell: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 
-    - name: set shell to zsh
-      shell: chsh -s `which zsh`
+    - shell: which zsh
+      register: zsh
 
-    - name: install oh-my-zsh
-      become: false
-      shell: curl -L http://install.ohmyz.sh | sh
+    - name: set the shell to zsh
+      become: true
+      user:
+        name: "{{ username_on_the_host.stdout }}"
+        shell: "{{ zsh.stdout }}"
 
     - name: install zsh-syntax-highlighting
-      become: false
       shell: cd ~/.oh-my-zsh && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git  
 
     - name: enable zsh-syntax-highlighting
-      become: false
       lineinfile:
         path: ~/.zshrc
         line: source ~/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  
 
-    - name: Create a 2048-bit SSH key for user jsmith in ~jsmith/.ssh/id_rsa
+    - name: install nvm
+      shell: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+    - name: Create a 2048-bit SSH
       user:
-        name: jsmith
+        name: "{{ username_on_the_host.stdout }}"
         generate_ssh_key: yes
         ssh_key_bits: 2048
-        ssh_key_file: .ssh/id_rsa
+        ssh_key_file: ~/.ssh/id_rsa
 
-    - name: Read SSH public key to authorize
-      shell: cat /home/foo/.ssh/id_rsa.pub
-      register: ssh_pub_key
+    #- name: Read SSH public key to authorize
+    #  shell: cat /home/foo/.ssh/id_rsa.pub
+    #  register: ssh_pub_key
 
-    - name: Authorize key with GitHub
-      local_action:
-        module: github_key
-        name: Access Key for Some Machine
-        token: '{{ github_access_token }}'
-        pubkey: '{{ ssh_pub_key.stdout }}'
+    #- name: Authorize key with GitHub
+      #local_action:
+        #module: github_key
+        #name: Access Key for Some Machine
+        #token: '{{ github_access_token }}'
+        #pubkey: '{{ ssh_pub_key.stdout }}'
