@@ -3,6 +3,8 @@
   connection: local
   become: true
   gather_facts: true
+  vars:
+    vagrant_version: 2.0.4
   pre_tasks:
     - name: Check Ansible Version
       assert:
@@ -11,3 +13,39 @@
       run_once: yes
   roles:
      - { role: ubuntu, when: ansible_distribution == 'Ubuntu' }
+     - { role: cmprescott.chrome, when: ansible_distribution == 'Ubuntu', become: true }
+     - { role: ansible-role-vagrant }
+     - role: gantsign.visual-studio-code
+       users:
+        - username: alois
+          visual_studio_code_extensions:
+            - PeterJausovec.vscode-docker
+            - lukehoban.Go
+            - dbaeumer.vscode-eslint
+            - xabikos.JavaScriptSnippets
+            - redhat.vscode-yaml
+          visual_studio_code_settings: {
+            "files.associations": {
+              "Vagrantfile": "ruby"
+            }
+          }
+  tasks:
+    - name: install nvm
+      shell: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+    - name: set shell to zsh
+      shell: chsh -s `which zsh`
+
+    - name: install oh-my-zsh
+      become: false
+      shell: curl -L http://install.ohmyz.sh | sh
+
+    - name: install zsh-syntax-highlighting
+      become: false
+      shell: cd ~/.oh-my-zsh && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git  
+
+    - name: enable zsh-syntax-highlighting
+      become: false
+      lineinfile:
+        path: ~/.zshrc
+        line: source ~/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  

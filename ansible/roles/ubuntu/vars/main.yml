@@ -2,3 +2,5 @@ apt_packages:
   - ansible
   - curl
   - git
+  - xclip
+  - zsh
