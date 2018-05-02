@@ -1,5 +1,6 @@
 # Tasks are run on local machine
 - hosts: localhost
+  connection: local
   become: true
   gather_facts: true
   pre_tasks:
@@ -10,4 +11,3 @@
       run_once: yes
   roles:
      - { role: ubuntu, when: ansible_distribution == 'Ubuntu' }
-     - { role: archlinux, when: ansible_distribution == 'Arch Linux' }
