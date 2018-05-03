@@ -48,6 +48,8 @@
        users:
          - username: "{{ username_on_the_host.stdout }}"
 
+     - { role: wtanaka.slack, become: true }
+
   tasks:
 
     - shell: which zsh
