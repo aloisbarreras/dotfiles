@@ -2,6 +2,7 @@
 - src: cmprescott.chrome
 - src: gantsign.visual-studio-code
 - src: gantsign.oh-my-zsh
+- src: wtanaka.slack
 
 # from GitHub
 - src: https://github.com/jdauphant/ansible-role-vagrant

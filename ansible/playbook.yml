@@ -27,10 +27,13 @@
             - dbaeumer.vscode-eslint
             - xabikos.JavaScriptSnippets
             - redhat.vscode-yaml
+            - robertohuertasm.vscode-icons
           visual_studio_code_settings: {
             "files.associations": {
               "Vagrantfile": "ruby"
-            }
+            },
+	    "workbench.iconTheme": "vscode-icons",
+	    "editor.tabSize": 2
           }
      - role: gantsign.oh-my-zsh
        # Default theme
@@ -58,6 +61,8 @@
 
     - name: install zsh-syntax-highlighting
       shell: cd ~/.oh-my-zsh && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git  
+      args:
+        creates: ~/.oh-my-zsh/zsh-syntax-highlighting
 
     - name: enable zsh-syntax-highlighting
       lineinfile:
