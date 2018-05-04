@@ -28,6 +28,8 @@
             - xabikos.JavaScriptSnippets
             - redhat.vscode-yaml
             - robertohuertasm.vscode-icons
+            - vscodevim.vim
+            - mrmlnc.vscode-duplicate
           visual_studio_code_settings: {
             "files.associations": {
               "Vagrantfile": "ruby"
