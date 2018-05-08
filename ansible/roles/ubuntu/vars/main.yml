@@ -4,3 +4,4 @@ apt_packages:
   - git
   - xclip
   - zsh
+  - guake

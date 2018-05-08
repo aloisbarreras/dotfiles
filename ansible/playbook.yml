@@ -16,27 +16,6 @@
 
   roles:
      - { role: ubuntu, when: ansible_distribution == 'Ubuntu' }
-     - { role: cmprescott.chrome, when: ansible_distribution == 'Ubuntu', become: true }
-     - { role: ansible-role-vagrant }
-     - role: gantsign.visual-studio-code
-       users:
-        - username: alois
-          visual_studio_code_extensions:
-            - PeterJausovec.vscode-docker
-            - lukehoban.Go
-            - dbaeumer.vscode-eslint
-            - xabikos.JavaScriptSnippets
-            - redhat.vscode-yaml
-            - robertohuertasm.vscode-icons
-            - vscodevim.vim
-            - mrmlnc.vscode-duplicate
-          visual_studio_code_settings: {
-            "files.associations": {
-              "Vagrantfile": "ruby"
-            },
-	    "workbench.iconTheme": "vscode-icons",
-	    "editor.tabSize": 2
-          }
      - role: gantsign.oh-my-zsh
        # Default theme
        oh_my_zsh_theme: mh
@@ -49,8 +28,6 @@
        # Important: oh-my-zsh is installed per user so you need to specify the users to install it for.
        users:
          - username: "{{ username_on_the_host.stdout }}"
-
-     - { role: wtanaka.slack, become: true }
 
   tasks:
 
